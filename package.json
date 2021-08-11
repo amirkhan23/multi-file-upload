@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "4.17.1",
+    "mongoose": "^5.13.6",
     "multer": "1.4.3"
   }
 }

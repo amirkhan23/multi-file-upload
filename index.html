@@ -5,9 +5,9 @@
 </head>
 
 <body>
-  <form id="uploadForm" enctype="multipart/form-data" action="/api/photo" method="post">
-    <input type="file" name="userPhoto" multiple />
-    <input type="submit" value="Upload Image" name="submit">
+  <label>Number of files: </label><input type="number" id="no" ><span>  </span><input type="button" id="button" value="create field">
+
+  <form id="uploadForm" enctype="multipart/form-data" action="/api/uploadFile" method="post" hidden>
     <span id="status"></span>
   </form>
 </body>
@@ -16,30 +16,34 @@
 <script>
   $(document).ready(function () {
 
+    $('#button').click(()=>{
+      var value =  $('#no').val() ;
+      console.log("value ",value)
+      $("#uploadForm").append(`<br><br>`);
+      for(let i=0;i<value;i++){
+        $("#uploadForm").append(`<input type="file" name="userPhoto" /><br/>`);
+      }
+      $("#uploadForm").append(`<input type="submit" value="Upload Image" name="submit">`);
+      $('#uploadForm').toggle();
+    });
+
     $('#uploadForm').submit(function () {
 
       var $fileUpload = $("input[type='file']");
-      if (parseInt($fileUpload.get(0).files.length) > 15) {
-        alert("You can only upload a maximum of 2 files");
-      } else {
+      $("#status").empty().text("File is uploading...");
 
-        $("#status").empty().text("File is uploading...");
+      $(this).ajaxSubmit({
 
-        $(this).ajaxSubmit({
+        error: function (xhr) {
+          status('Error: ' + xhr.status);
+        },
 
-          error: function (xhr) {
-            status('Error: ' + xhr.status);
-          },
+        success: function (response) {
+          console.log(response)
+          $("#status").empty().text(response);
 
-          success: function (response) {
-            console.log(response)
-            $("#status").empty().text(response);
-          }
-        });
-      }
-
-
-
+        }
+      });
       return false;
     });
   });
